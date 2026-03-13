@@ -2,7 +2,9 @@ package com.murillo.bufonio.service;
 
 import com.murillo.bufonio.model.Channel;
 import com.murillo.bufonio.model.Comment;
+import com.murillo.bufonio.model.User;
 import com.murillo.bufonio.repository.CommentRepository;
+import com.murillo.bufonio.security.service.SecurityContextService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private SecurityContextService securityContextService;
+
     public void createComment(String tokenChannel, Comment comment) {
         Channel channel = channelService.getChannelByTokenChannelPublic(tokenChannel);
         comment.setChannel(channel);
@@ -26,10 +31,10 @@ public class CommentService {
     }
 
     public List<Comment> getCommentsByTokenChannel(String tokenChannel, LocalDateTime days) {
-        Channel channel = channelService.getChannelByTokenChannel(tokenChannel);
-        return commentRepository.findAllByChannel_IdChannelAndChannel_UserAndCreatedAtAfterAndProcessedFalse(
-                channel.getIdChannel(),
-                channel.getUser(),
+        User user = securityContextService.getCurrentUser().getUser();
+        return commentRepository.findAllByChannel_TokenChannelAndChannel_User_IdUserAndCreatedAtAfterAndProcessedFalse(
+                tokenChannel,
+                user.getIdUser(),
                 days);
     }
 }

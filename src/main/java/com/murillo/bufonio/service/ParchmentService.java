@@ -8,6 +8,7 @@ import com.murillo.bufonio.model.Comment;
 import com.murillo.bufonio.model.Parchment;
 import com.murillo.bufonio.model.User;
 import com.murillo.bufonio.repository.ParchmentRepository;
+import com.murillo.bufonio.security.service.SecurityContextService;
 import com.murillo.bufonio.util.mapper.ParchmentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class ParchmentService {
 
     @Autowired
     private ParchmentRepository parchmentRepository;
+
+    @Autowired
+    private SecurityContextService securityContextService;
 
     @Autowired
     private ChannelService channelService;
@@ -54,15 +58,17 @@ public class ParchmentService {
     }
 
     public List<ParchmentSummary> getParchmentSummariesByTokenChannel(String tokenChannel) {
-        Channel channel = channelService.getChannelByTokenChannel(tokenChannel);
-        User user = channel.getUser();
-        return parchmentRepository.findAllByChannel_IdChannelAndChannel_UserOrderByCreatedAtDesc(channel.getIdChannel(), user);
+        User user = securityContextService.getCurrentUser().getUser();
+        return parchmentRepository.findAllByChannel_TokenChannelAndChannel_User_IdUserOrderByCreatedAtDesc(
+                tokenChannel,
+                user.getIdUser()
+        );
     }
 
     public Parchment getParchmentByTokenChannelAndIdParchment(String tokenChannel, Long idParchment) {
-        Channel channel = channelService.getChannelByTokenChannel(tokenChannel);
-        return parchmentRepository.findByIdParchmentAndChannel(idParchment, channel)
+        User user = securityContextService.getCurrentUser().getUser();
+        return parchmentRepository.findByIdParchmentAndChannel_TokenChannelAndChannel_User_IdUser(idParchment, tokenChannel, user.getIdUser())
                 .orElseThrow(() -> new RecourseNotFoundException(
-                        "No se encontró el pergamino con id " + idParchment + " en este canal"));
+                        "Parchment has not been found with ID: " + idParchment + " for the specified channel"));
     }
 }

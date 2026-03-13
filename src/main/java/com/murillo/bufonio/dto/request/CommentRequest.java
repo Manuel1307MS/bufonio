@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record CommentRequest(
-        @NotBlank(message = "El comentario no puede estar vacío")
-        @Size(max = 500, message = "El comentario no puede exceder los 500 caracteres")
+        @NotBlank(message = "Comment cannot be empty")
+        @Size(max = 500, message = "Comment cannot exceed 500 characters")
         String comment
 ) {}

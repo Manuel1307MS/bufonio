@@ -25,7 +25,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         ExceptionResponse body = new ExceptionResponse(
                 HttpStatus.FORBIDDEN.value(),
                 HttpStatus.FORBIDDEN.getReasonPhrase(),
-                "No tienes permisos suficientes para acceder a este recurso",
+                "You do not have sufficient permissions to access this resource",
                 request.getRequestURI(),
                 null
         );

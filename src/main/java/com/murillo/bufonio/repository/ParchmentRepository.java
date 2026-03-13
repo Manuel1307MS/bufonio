@@ -8,13 +8,19 @@ import com.murillo.bufonio.model.Channel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.murillo.bufonio.model.Parchment;
-import com.murillo.bufonio.model.User;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ParchmentRepository extends JpaRepository<Parchment, Long> {
 
-    List<ParchmentSummary> findAllByChannel_IdChannelAndChannel_UserOrderByCreatedAtDesc(Long idChannel, User user);
+    List<ParchmentSummary> findAllByChannel_TokenChannelAndChannel_User_IdUserOrderByCreatedAtDesc(
+            String tokenChannel,
+            Long idUser
+    );
 
-    Optional<Parchment> findByIdParchmentAndChannel(Long idParchment, Channel channel);
+    Optional<Parchment> findByIdParchmentAndChannel_TokenChannelAndChannel_User_IdUser(
+            Long idParchment,
+            String tokenChannel,
+            Long idUser
+    );
 }

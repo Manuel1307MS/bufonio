@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
                         .map(error -> error.getField() + ": " + error.getDefaultMessage())
                         .toList();
 
-                return buildResponse(HttpStatus.BAD_REQUEST, "Error de validación en los campos", request, errors);
+                return buildResponse(HttpStatus.BAD_REQUEST, "Validation error in request fields", request, errors);
         }
 
         @ExceptionHandler(ConstraintViolationException.class)
@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
                         .map(cv -> cv.getPropertyPath() + ": " + cv.getMessage())
                         .toList();
 
-                return buildResponse(HttpStatus.BAD_REQUEST, "Error de validación de restricciones", request, errors);
+                return buildResponse(HttpStatus.BAD_REQUEST, "Constraint violation error", request, errors);
         }
 
         // --- TECHNICAL EXCEPTIONS ---
@@ -89,47 +89,47 @@ public class GlobalExceptionHandler {
                 Throwable cause = ex.getCause();
 
                 if (cause instanceof UnrecognizedPropertyException unrecognized) {
-                        String detail = "El campo '" + unrecognized.getPropertyName() + "' no es reconocido.";
-                        return buildResponse(HttpStatus.BAD_REQUEST, "Campo excedente", request, List.of(detail));
+                        String detail = "The field '" + unrecognized.getPropertyName() + "' is not recognized.";
+                        return buildResponse(HttpStatus.BAD_REQUEST, "Extra field detected", request, List.of(detail));
                 }
 
                 if (cause instanceof InvalidFormatException invalid) {
                         String fieldName = invalid.getPath().getFirst().getFieldName();
-                        String detail = "El campo '" + fieldName + "' recibió un valor inválido: '" + invalid.getValue() + "'.";
-                        return buildResponse(HttpStatus.BAD_REQUEST, "Formato inválido", request, List.of(detail));
+                        String detail = "The field '" + fieldName + "' received an invalid value: '" + invalid.getValue() + "'.";
+                        return buildResponse(HttpStatus.BAD_REQUEST, "Invalid format", request, List.of(detail));
                 }
 
-                return buildResponse(HttpStatus.BAD_REQUEST, "JSON mal formado", request, null);
+                return buildResponse(HttpStatus.BAD_REQUEST, "Malformed JSON", request, null);
         }
 
         @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
         public ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
-                return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, "Método HTTP no permitido: " + ex.getMethod(), request, null);
+                return buildResponse(HttpStatus.METHOD_NOT_ALLOWED, "HTTP method not allowed: " + ex.getMethod(), request, null);
         }
 
         // --- JWT ---
 
         @ExceptionHandler(JWTVerificationException.class)
         public ResponseEntity<ExceptionResponse> handleJWTVerification(JWTVerificationException ex, HttpServletRequest request) {
-                return buildResponse(HttpStatus.UNAUTHORIZED, "RefreshToken inválido", request, null);
+                return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid RefreshToken", request, null);
         }
 
         @ExceptionHandler(TokenExpiredException.class)
         public ResponseEntity<ExceptionResponse> handleTokenExpired(TokenExpiredException ex, HttpServletRequest request) {
-                return buildResponse(HttpStatus.UNAUTHORIZED, "El refreshToken ha expirado", request, null);
+                return buildResponse(HttpStatus.UNAUTHORIZED, "The RefreshToken has expired", request, null);
         }
 
         // --- LOGIN ---
 
         @ExceptionHandler(BadCredentialsException.class)
         public ResponseEntity<ExceptionResponse> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
-                return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales incorrectas", request, List.of("El usuario o la contraseña no coinciden con nuestros registros."));
+                return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials", request, List.of("The username or password does not match our records."));
         }
 
         // --- ALL ---
 
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ExceptionResponse> handleAll(Exception ex, HttpServletRequest request) {
-                return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor", request, null);
+                return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", request, null);
         }
 }

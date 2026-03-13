@@ -25,7 +25,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         ExceptionResponse body = new ExceptionResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                "No autenticado o accessToken inválido",
+                "Unauthenticated or invalid accessToken",
                 request.getRequestURI(),
                 null
         );

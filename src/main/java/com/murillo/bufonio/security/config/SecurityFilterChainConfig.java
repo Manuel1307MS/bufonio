@@ -47,13 +47,13 @@ public class SecurityFilterChainConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // --- Manejo de errores de seguridad ---
+                // --- Security error handling ---
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
 
-                // --- Autorización ---
+                // --- Authorization ---
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
@@ -61,7 +61,7 @@ public class SecurityFilterChainConfig {
                         .anyRequest().authenticated()
                 )
 
-                // --- Desactivar mecanismos orientados a navegador ---
+                // --- Disable browser-oriented mechanisms ---
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)

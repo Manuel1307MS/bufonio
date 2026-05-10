@@ -4,23 +4,19 @@ import com.murillo.bufonio.dto.UserDTO;
 import com.murillo.bufonio.model.User;
 import com.murillo.bufonio.service.UserService;
 import com.murillo.bufonio.util.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.murillo.bufonio.security.dto.request.auth.LoginRequest;
+import com.murillo.bufonio.security.dto.request.auth.LoginGoogleRequest; // El nuevo DTO
 import com.murillo.bufonio.security.dto.response.auth.LoginResponse;
 import com.murillo.bufonio.security.service.auth.LoginService;
 
 import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -42,11 +38,20 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+        Map<String, String> tokens = loginService.login(loginRequest.emailUser(), loginRequest.passwordUser());
+        return createLoginResponse(tokens);
+    }
 
-        Map<String,String> tokens = loginService.login(loginRequest.emailUser(), loginRequest.passwordUser());
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> loginGoogle(@RequestBody @Valid LoginGoogleRequest loginGoogleRequest) {
+        Map<String, String> tokens = loginService.loginGoogle(loginGoogleRequest.idToken());
+        return createLoginResponse(tokens);
+    }
 
+    private ResponseEntity<LoginResponse> createLoginResponse(Map<String, String> tokens) {
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
+        String email = tokens.get("email");
 
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
@@ -56,7 +61,8 @@ public class LoginController {
                 .sameSite("None")
                 .build();
 
-        User user = userService.getUserByEmailUser(loginRequest.emailUser()).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        User user = userService.getUserByEmailUser(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         UserDTO userDTO = userMapper.toDTO(user);
 

@@ -22,7 +22,7 @@ public class UserDetailsImp implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPasswordUser();
+        return user.getPasswordUser() != null ? user.getPasswordUser() : "";
     }
 
     @Override

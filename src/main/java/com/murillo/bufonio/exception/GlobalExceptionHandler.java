@@ -123,7 +123,21 @@ public class GlobalExceptionHandler {
 
         @ExceptionHandler(BadCredentialsException.class)
         public ResponseEntity<ExceptionResponse> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
-                return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials", request, List.of("The username or password does not match our records."));
+                return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), request, List.of("The username or password does not match our records."));
+        }
+
+        // --- GOOGLE LOGIN ---
+        @ExceptionHandler(GoogleAuthenticationRequiredException.class)
+        public ResponseEntity<ExceptionResponse> handleGoogleAuthenticationRequired(
+                GoogleAuthenticationRequiredException ex,
+                HttpServletRequest request
+        ) {
+                return buildResponse(
+                        HttpStatus.UNAUTHORIZED,
+                        ex.getMessage(),
+                        request,
+                        null
+                );
         }
 
         // --- ALL ---

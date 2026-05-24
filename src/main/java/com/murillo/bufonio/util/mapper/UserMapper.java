@@ -13,6 +13,5 @@ public interface UserMapper {
     UserDTO toDTO(User user);
 
     @Mapping(target = "idUser", ignore = true)
-    @Mapping(target = "channels", ignore = true)
     User fromRegisterRequest(RegisterRequest registerRequest);
 }

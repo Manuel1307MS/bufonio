@@ -11,6 +11,9 @@ public interface ParchmentMapper {
 
     ParchmentDTO toDTO(Parchment parchment);
 
-    @Mapping(target = "channel", ignore = true)
+    @Mapping(target = "idParchment", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "commentsCount", ignore = true)
+    @Mapping(target = "channelIdChannel", ignore = true)
     Parchment toParchment(ParchmentAnalysis parchmentAnalysis);
 }

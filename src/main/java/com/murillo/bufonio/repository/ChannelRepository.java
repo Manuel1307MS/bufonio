@@ -2,22 +2,18 @@ package com.murillo.bufonio.repository;
 
 import java.util.List;
 import java.util.Optional;
-
-import com.murillo.bufonio.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.murillo.bufonio.model.Channel;
 import org.springframework.stereotype.Repository;
+import com.murillo.bufonio.model.Channel;
 
 @Repository
 public interface ChannelRepository extends JpaRepository<Channel, Long> {
 
-    List<Channel> findAllByUser_IdUserOrderByCreatedAtDesc(Long idUser);
+    List<Channel> findAllByUserIdUserOrderByCreatedAtDesc(Long userIdUser);
 
     Optional<Channel> findByTokenChannel(String tokenChannel);
 
-    Optional<Channel> findByTokenChannelAndUser_IdUser(String tokenChannel, Long idUser);
+    Optional<Channel> findByTokenChannelAndUserIdUser(String tokenChannel, Long userIdUser);
 
-    void deleteByTokenChannelAndUser_IdUser(String tokenChannel, Long idUser);
-
+    void deleteByTokenChannelAndUserIdUser(String tokenChannel, Long userIdUser);
 }

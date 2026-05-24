@@ -25,14 +25,14 @@ public class CommentService {
 
     public void createComment(String tokenChannel, Comment comment) {
         Channel channel = channelService.getChannelByTokenChannelPublic(tokenChannel);
-        comment.setChannel(channel);
+        comment.setChannelIdChannel(channel.getIdChannel());
         comment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
     }
 
     public List<Comment> getCommentsByTokenChannel(String tokenChannel, LocalDateTime days) {
         User user = securityContextService.getCurrentUser().getUser();
-        return commentRepository.findAllByChannel_TokenChannelAndChannel_User_IdUserAndCreatedAtAfterAndProcessedFalse(
+        return commentRepository.findUnprocessedComments(
                 tokenChannel,
                 user.getIdUser(),
                 days);

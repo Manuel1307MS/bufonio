@@ -28,12 +28,12 @@ public class UserService {
     }
 
     public Optional<User> getUserByEmailUser(String email) {
-        return userRepository.findUserByEmailUser(email);
+        return userRepository.findByEmailUser(email);
     }
 
     public User getUserByIdUser(){
         User user = securityContextService.getCurrentUser().getUser();
-        return userRepository.findUserByIdUser(user.getIdUser()).orElseThrow(()->new RecourseNotFoundException("User not found"));
+        return userRepository.findById(user.getIdUser()).orElseThrow(()->new RecourseNotFoundException("User not found"));
     }
 
     public UserSummary getUserSummaryByIdUser() {

@@ -21,7 +21,7 @@ public class RegisterService {
 
         boolean existUser = userService.existByEmailUser(user.getEmailUser());
 
-        if (existUser) throw new EmailAlreadyRegisteredException("El email ya está registrado");
+        if (existUser) throw new EmailAlreadyRegisteredException("Email already registered!");
 
         String encodedPassword = passwordEncoder.encode(user.getPasswordUser());
         user.setPasswordUser(encodedPassword);

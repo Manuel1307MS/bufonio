@@ -4,6 +4,7 @@ import com.murillo.bufonio.dto.request.CommentRequest;
 import com.murillo.bufonio.model.Comment;
 import com.murillo.bufonio.service.CommentService;
 import com.murillo.bufonio.util.mapper.CommentMapper;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +26,7 @@ public class CommentController {
     @PostMapping("/public")
     public ResponseEntity<Void> createPublicComment(
             @NotBlank @PathVariable String tokenChannel,
-            @RequestBody CommentRequest commentRequest) {
+            @Valid @RequestBody CommentRequest commentRequest) {
 
         Comment comment = commentMapper.fromCommentRequest(commentRequest);
         commentService.createComment(tokenChannel, comment);

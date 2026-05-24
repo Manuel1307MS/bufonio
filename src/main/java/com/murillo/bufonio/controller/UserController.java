@@ -5,7 +5,6 @@ import com.murillo.bufonio.dto.summary.UserSummary;
 import com.murillo.bufonio.model.User;
 import com.murillo.bufonio.service.UserService;
 import com.murillo.bufonio.util.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private UserMapper userMapper;
+    public UserController(UserService userService, UserMapper userMapper) {
+        this.userService = userService;
+        this.userMapper = userMapper;
+    }
 
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser() {

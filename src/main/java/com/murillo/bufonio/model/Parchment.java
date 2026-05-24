@@ -28,6 +28,7 @@ public class Parchment {
     private String potentialImpacts;
     private String monitoringIndicator;
     private String bufonioAdvice;
-    @ManyToOne(optional = false)
-    private Channel channel;
+
+    @Column(name = "channel_id_channel", nullable = false)
+    private Long channelIdChannel;
 }

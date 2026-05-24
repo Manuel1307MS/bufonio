@@ -24,7 +24,7 @@ public class ChannelService {
 
     public Channel createChannel(Channel channel){
         User user = securityContextService.getCurrentUser().getUser();
-        channel.setUser(user);
+        channel.setUserIdUser(user.getIdUser());
         channel.setTokenChannel(UUID.randomUUID().toString());
         channel.setCreatedAt(LocalDateTime.now());
         return channelRepository.save(channel);
@@ -32,12 +32,12 @@ public class ChannelService {
 
     public List<Channel> getChannelsByUser(){
         User user = securityContextService.getCurrentUser().getUser();
-        return channelRepository.findAllByUser_IdUserOrderByCreatedAtDesc(user.getIdUser());
+        return channelRepository.findAllByUserIdUserOrderByCreatedAtDesc(user.getIdUser());
     }
 
     public Channel getChannelByTokenChannel(String tokenChannel) {
         User user = securityContextService.getCurrentUser().getUser();
-        return channelRepository.findByTokenChannelAndUser_IdUser(tokenChannel,user.getIdUser())
+        return channelRepository.findByTokenChannelAndUserIdUser(tokenChannel,user.getIdUser())
                 .orElseThrow(() -> new RecourseNotFoundException(
                         "Channel has not been found: " + tokenChannel));
     }
@@ -51,13 +51,13 @@ public class ChannelService {
     @Transactional
     public void deleteByTokenChannel(String tokenChannel) {
         User user = securityContextService.getCurrentUser().getUser();
-        channelRepository.deleteByTokenChannelAndUser_IdUser(tokenChannel,user.getIdUser());
+        channelRepository.deleteByTokenChannelAndUserIdUser(tokenChannel,user.getIdUser());
     }
 
     @Transactional
     public Channel updateChannelByTokenChannel(String tokenChannel, Channel channel) {
         User user = securityContextService.getCurrentUser().getUser();
-        Channel channelUpdate = channelRepository.findByTokenChannelAndUser_IdUser(tokenChannel,user.getIdUser())
+        Channel channelUpdate = channelRepository.findByTokenChannelAndUserIdUser(tokenChannel,user.getIdUser())
                 .orElseThrow(() -> new RecourseNotFoundException("Channel has not been found" + tokenChannel));
         channelUpdate.setNameChannel(channel.getNameChannel());
         return channelRepository.save(channelUpdate);

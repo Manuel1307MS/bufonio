@@ -50,7 +50,7 @@ public class ParchmentService {
 
         Parchment parchment = parchmentMapper.toParchment(analysis);
 
-        parchment.setChannel(channel);
+        parchment.setChannelIdChannel(channel.getIdChannel());
         parchment.setCreatedAt(LocalDateTime.now());
         parchment.setCommentsCount(comments.size());
 
@@ -59,7 +59,7 @@ public class ParchmentService {
 
     public List<ParchmentSummary> getParchmentSummariesByTokenChannel(String tokenChannel) {
         User user = securityContextService.getCurrentUser().getUser();
-        return parchmentRepository.findAllByChannel_TokenChannelAndChannel_User_IdUserOrderByCreatedAtDesc(
+        return parchmentRepository.findAllByChannelData(
                 tokenChannel,
                 user.getIdUser()
         );
@@ -67,7 +67,7 @@ public class ParchmentService {
 
     public Parchment getParchmentByTokenChannelAndIdParchment(String tokenChannel, Long idParchment) {
         User user = securityContextService.getCurrentUser().getUser();
-        return parchmentRepository.findByIdParchmentAndChannel_TokenChannelAndChannel_User_IdUser(idParchment, tokenChannel, user.getIdUser())
+        return parchmentRepository.findByIdAndChannelData(idParchment, tokenChannel, user.getIdUser())
                 .orElseThrow(() -> new RecourseNotFoundException(
                         "Parchment has not been found with ID: " + idParchment + " for the specified channel"));
     }

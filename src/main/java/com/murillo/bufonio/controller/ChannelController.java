@@ -2,6 +2,7 @@ package com.murillo.bufonio.controller;
 
 import com.murillo.bufonio.dto.ChannelDTO;
 import com.murillo.bufonio.dto.request.ChannelRequest;
+import com.murillo.bufonio.dto.summary.ChannelSummary;
 import com.murillo.bufonio.dto.update.ChannelUpdate;
 import com.murillo.bufonio.model.Channel;
 import com.murillo.bufonio.service.ChannelService;
@@ -66,5 +67,11 @@ public class ChannelController {
     public ResponseEntity<Void> deleteChannel(@PathVariable String tokenChannel) {
         channelService.deleteByTokenChannel(tokenChannel);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/summaries")
+    public ResponseEntity<List<ChannelSummary>> getChannelsSummaries() {
+        List<ChannelSummary> summaries = channelService.getChannelsSummaries();
+        return ResponseEntity.ok(summaries);
     }
 }

@@ -1,5 +1,6 @@
 package com.murillo.bufonio.service;
 
+import com.murillo.bufonio.dto.summary.ChannelSummary;
 import com.murillo.bufonio.exception.custom.RecourseNotFoundException;
 import com.murillo.bufonio.model.Channel;
 import com.murillo.bufonio.model.User;
@@ -61,5 +62,10 @@ public class ChannelService {
                 .orElseThrow(() -> new RecourseNotFoundException("Channel has not been found" + tokenChannel));
         channelUpdate.setNameChannel(channel.getNameChannel());
         return channelRepository.save(channelUpdate);
+    }
+
+    public List<ChannelSummary> getChannelsSummaries() {
+        User user = securityContextService.getCurrentUser().getUser();
+        return channelRepository.findChannelsSummaryByUserId(user.getIdUser());
     }
 }
